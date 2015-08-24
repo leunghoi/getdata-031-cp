@@ -1,13 +1,14 @@
-getwd()
+#step 1: download and unzip the datasets in the working directory
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",
                 destfile = "FUCI HAR Dataset.zip")
-#data <- read.table(unz("FUCI HAR Dataset.zip", exdir="./"))
 unzip("FUCI HAR Dataset.zip")
 
+#step 2: read the feastures list / variable names
 features <- read.fwf("./UCI HAR Dataset/features.txt", widths = c(3, 38))
 
 
-
+#step 3: read the 3 train datasets into dataframes, name all the columns, 
+#        and combine the 3 dataframs into one dataframe.
 sub_train <- read.table("./UCI HAR Dataset/train/subject_train.txt")
 names(sub_train) <- c("subject")
 
@@ -25,7 +26,8 @@ head(train_data[,1:10])
 
 
 
-
+#step 4: read the 3 test datasets into dataframes, name all the columns, 
+#        and combine the 3 dataframes into one dataframe.
 sub_test <- read.table("./UCI HAR Dataset/test/subject_test.txt")
 names(sub_test) <- c("subject")
 
@@ -42,20 +44,25 @@ test_data <- cbind(var_type, y_test_set, sub_test, x_test)
 head(test_data[,1:10])
 
 
+#step 5: combine the train and test dataframes into one dataframe using rbind.
 combined <- rbind(train_data, test_data)
 
 
+#step 6: get the column indexes of all the fields where the name contains "mean()" or 
+#        "std()".
 col_index <- c(1, 2, 3, grep("mean()", features[,2]) + 3, 
                grep("std()", features[,2]) + 3)
 col_index <- col_index[order(col_index)]
 
+
+#step 7: keep only the fields with the indexes in step 6.
 combined <- combined[, col_index]
 dim(combined)
 head(combined)
 
 
 
-
+#step 8: calculate the means of each field by subject.
 s <- split(combined, combined$subject)
 mean_by_sub <- sapply(s, function(x) { lapply(x[, 4:82], mean) } )
 mean_by_sub <- t(mean_by_sub)
