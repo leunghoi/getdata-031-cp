@@ -13,6 +13,6 @@ step 5: combine the train and test dataframes into one dataframe using rbind.
 
 step 6: get the column indexes of all the fields where the name contains "mean()" or "std()".
 
-step 7: keep only the fields with the indexes in step 5.
+step 7: keep only the fields with the indexes in step 6.
 
 step 8: calculate the means of each field by subject.
