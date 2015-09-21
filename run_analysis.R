@@ -1,3 +1,6 @@
+install.packages("data.table")
+library(data.table)
+
 #step 1: download and unzip the datasets in the working directory
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",
                 destfile = "FUCI HAR Dataset.zip")
@@ -9,14 +12,18 @@ features <- read.fwf("./UCI HAR Dataset/features.txt", widths = c(3, 38))
 
 #step 3: read the 3 train datasets into dataframes, name all the columns, 
 #        and combine the 3 dataframs into one dataframe.
+#sub_train <- fread("./UCI HAR Dataset/train/subject_train.txt")
 sub_train <- read.table("./UCI HAR Dataset/train/subject_train.txt")
 names(sub_train) <- c("subject")
 
+#y_train_set <- fread("./UCI HAR Dataset/train/Y_train.txt")
 y_train_set <- read.table("./UCI HAR Dataset/train/Y_train.txt")
 names(y_train_set) <- c("y")
 
+?fread
+?read.fwf
 x_train <- read.fwf(file="./UCI HAR Dataset/train/X_train.txt", 
-                   widths = rep(16, 561))
+                   widths = rep(16, 561), buffersize=500)
 names(x_train) <- features[,2]
 
 var_type <- rep("train", dim(y_train_set)[1])
@@ -35,7 +42,7 @@ y_test_set <- read.table("./UCI HAR Dataset/test/Y_test.txt")
 names(y_test_set) <- c("y")
 
 x_test <- read.fwf(file="./UCI HAR Dataset/test/X_test.txt", 
-                   widths = rep(16, 561))
+                   widths = rep(16, 561), buffersize=500)
 names(x_test) <- features[,2]
 
 var_type <- rep("test", dim(y_test_set)[1])
